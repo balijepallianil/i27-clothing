@@ -1,26 +1,27 @@
 // Jenkinsfile to build and deploy the apps to various environments 
 // Jenkinsfile to deploy our react based applications
 pipeline {
-    agent any 
-    stages {
-        stage('Build') {
-            // Code to build the app
+    agent any
+        tools{
+           jdk 'JDK-17'
         }
-        stage ('DockerBuildAndPush') {
-            // Docker build 
-            // docker login
-            // docker push
+        environment {
+            APPLICATION_NAME = "clothing"
+            DOCKER_HUB = "docker.io/i27anilb3"
+            DOCKER_CREDS = credentials('docker_creds')
+            MAHA_CREDS = credentials('maha_creds')
         }
-        stage ('Dev Deploy') {
-            // Code, logic to deploy to dev env 
-            // container deploy
-            // docker run --name {app_name} image runtimedata
-        }
-        stage ('Test Deploy') {
-            // Code, logic to deploy to test env 
-        }
-        stage ('Prod Deploy') {
-            // Code, logic to deploy to dev env 
+        stages {
+            stage('imageBuild') {
+                // Code to build the app
+                sh "docker build --force-rm --no-cache -t ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT} ."       
+            }
+            stage ('DockerPushToHub') {
+               sh "docker login -u ${DOCKER_CREDS_USR} -p ${DOCKER_CREDS_PSW}"
+               sh "docker push ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}"
+            }
+            stage ('Dev Deploy') {
+            sh "sshpass -p ${MAHA_CREDS_PSW} ssh -o StrictHostKeyChecking=no ${MAHA_CREDS_USR}@${DOCKER_DEPLOY_HOST_IP} docker run -P --name ${env.APPLICATION_NAME}-dev ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}"
         }
     }
 }
