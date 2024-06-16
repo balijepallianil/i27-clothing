@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Set the environemnt to dev, if not provided
-ENVIRONMENT= "${1:-dev}"
+ENVIRONMENT="${1:-dev}"
 
 case "$ENVIRONMENT" in
     dev)
