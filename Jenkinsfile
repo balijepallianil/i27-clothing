@@ -1,7 +1,9 @@
 // Jenkinsfile to build and deploy the apps to various environments 
 // Jenkinsfile to deploy our react based applications
 pipeline {
-    agent any
+    agent {
+        label 'k8s-slave'
+    }
         tools{
            jdk 'JDK-17'
         }
