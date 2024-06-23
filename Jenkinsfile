@@ -34,7 +34,7 @@ pipeline {
     }
 }
 
-def imageBuildFrontEnd(appName) {
+def imageBuildFrontEnd() {
     jenkins.sh """
     echo "**************************** Building Docker Image ****************************"
     sh "docker build --force-rm --no-cachet ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT} ./.cicd"
