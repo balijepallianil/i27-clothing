@@ -35,7 +35,8 @@ pipeline {
 }
 
 def imageBuildFrontEnd() {
-    jenkins.sh """
+    return{
+    sh """
     echo "**************************** Building Docker Image ****************************"
     sh "docker build --force-rm --no-cachet ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT} ./.cicd"
     echo "********Docker login******"
@@ -43,5 +44,6 @@ def imageBuildFrontEnd() {
     echo "********Docker Push******"
     sh "docker push ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}"
     """
+    }
 }
 
