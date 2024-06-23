@@ -36,14 +36,12 @@ pipeline {
 
 def imageBuildFrontEnd() {
     return{
-    sh """
     echo "**************************** Building Docker Image ****************************"
-    sh "docker build --force-rm --no-cache ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT} ./.cicd/"
+    sh "docker build --force-rm --no-cache -t ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT} ./.cicd"
     echo "********Docker login******"
     sh "docker login -u ${DOCKER_CREDS_USR} -p ${DOCKER_CREDS_PSW}"
     echo "********Docker Push******"
     sh "docker push ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}"
-    """
     }
 }
 
